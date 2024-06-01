@@ -45,6 +45,7 @@ class UniformCostSearch:
         # Update the graph
         self.graph = new_graph
 
+<<<<<<< Updated upstream
 # MCO1 Given Graph
 if __name__ == "__main__":
     # Define the graph with the given distances
@@ -69,3 +70,5 @@ if __name__ == "__main__":
     # Print the path (visited nodes in order) and the total cost
     print(f"Path: {visited_order}")
     print(f"Total Cost: {cost}")
+=======
+>>>>>>> Stashed changes

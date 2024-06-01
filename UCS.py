@@ -44,31 +44,3 @@ class UniformCostSearch:
     def update_graph(self, new_graph):
         # Update the graph
         self.graph = new_graph
-
-<<<<<<< Updated upstream
-# MCO1 Given Graph
-if __name__ == "__main__":
-    # Define the graph with the given distances
-    graph = {
-        'Dallas': {'Los Angeles': 1700, 'New York': 1500, 'Miami': 1200},
-        'Chicago': {'San Francisco': 500, 'New York': 800},
-        'San Francisco': {'Los Angeles': 500, 'Chicago': 2200},
-        'Los Angeles': {'San Francisco': 500, 'New York': 3000, 'Dallas': 1700},
-        'Boston': {'New York': 250},
-        'Miami': {'Dallas': 1200, 'New York': 1000},
-        'New York': {'Los Angeles': 3000, 'Dallas': 1500, 'Chicago': 800, 'Boston': 250, 'Miami': 1200}
-    }
-
-    # Create the instance of the UniformCostSearch class with the graph
-    ucs = UniformCostSearch(graph)
-    start = 'Dallas'
-    goal = 'Chicago'
-
-    # Perform the search from start to goal
-    visited_order, cost = ucs.search(start, goal)
-
-    # Print the path (visited nodes in order) and the total cost
-    print(f"Path: {visited_order}")
-    print(f"Total Cost: {cost}")
-=======
->>>>>>> Stashed changes

@@ -176,15 +176,17 @@ def find_path():
             current, peak = tracemalloc.get_traced_memory()
             tracemalloc.stop()
             
-            path_str = " -> ".join(visited_order)
+            path_str = " -> ".join(path)
+            visited_str = " -> ".join(visited_order)
             
             result_text = (
-                f"Path: {path_str}\n"
-                f"Total Cost: {total_cost}\n"
-                f"Time: {end_time - start_time} seconds\n"
-                f"Nodes Expanded: {nodes_expanded}\n"
-                f"Max Frontier Size: {max_frontier_size}\n"
-                f"Memory Usage: Current={current / 1024}KB, Peak={peak / 1024}KB\n"
+                f"Final Path: {path_str}\n\n"
+                f"Path Traversed: {visited_str}\n\n"
+                f"Total Cost: {total_cost}\n\n"
+                f"Time: {end_time - start_time} seconds\n\n"
+                f"Nodes Expanded: {nodes_expanded}\n\n"
+                f"Max Frontier Size: {max_frontier_size}\n\n"
+                f"Memory Usage: Current={current / 1024}KB, Peak={peak / 1024}KB\n\n"
                 f"Visit Count: {visit_count}"
             )
 

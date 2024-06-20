@@ -1,2 +1,1 @@
-
-        heapq.heappush(frontier, (0, start))
+max_fron

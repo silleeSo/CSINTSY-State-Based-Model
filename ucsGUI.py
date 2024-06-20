@@ -2,6 +2,9 @@ import tkinter as tk
 import heapq
 import time
 import threading
+import tracemalloc
+from tkinter.scrolledtext import ScrolledText
+
 
 # Uniform Cost Search algorithm
 class UniformCostSearch:
@@ -15,6 +18,12 @@ class UniformCostSearch:
         frontier = []
         heapq.heappush(frontier, (0, start))
 
+        # Frequency count of node visits
+        visit_count = {start: 1}
+
+        # Track the maximum size of the priority queue
+        max_frontier_size = 0
+
         # Store the cost to reach each node
         cost_so_far = {start: 0}
         # Store the path taken to reach each node
@@ -24,6 +33,9 @@ class UniformCostSearch:
         visited_order = []
 
         while frontier:
+            # Track the maximum size of the priority queue
+            max_frontier_size = max(max_frontier_size, len(frontier))
+
             # Pop the node with the lowest cost from the priority queue
             current_cost, current_node = heapq.heappop(frontier)
             # Record the current node as visited
@@ -38,7 +50,7 @@ class UniformCostSearch:
                 while current_node is not None:
                     path.append(current_node)
                     current_node = came_from[current_node]
-                return visited_order, cost_so_far[goal], path[::-1]
+                return visited_order, cost_so_far[goal], path[::-1], len(visited_order), max_frontier_size, visit_count
 
             # Explore neighbors of the current node
             for neighbor, cost in self.graph[current_node].items():
@@ -50,12 +62,14 @@ class UniformCostSearch:
                     cost_so_far[neighbor] = new_cost
                     heapq.heappush(frontier, (new_cost, neighbor))
                     came_from[neighbor] = current_node
+                    visit_count[neighbor] = visit_count.get(neighbor, 0) + 1
 
                     # Visualize the current step
                     visualize_step(current_node, neighbor)
 
         # If the goal is not reachable, return the visited order, infinity as cost, and an empty path
-        return visited_order, float('inf'), []
+        return visited_order, float('inf'), [], len(visited_order), max_frontier_size, visit_count
+
 
 # Function to visualize each step of the algorithm
 def visualize_step(current, neighbor=None, visited=False):
@@ -151,17 +165,32 @@ def find_path():
     if start_city is not None and end_city is not None:
         # Measure time before executing the algorithm
         start_time = time.time()
+        tracemalloc.start()  # Start memory tracking
         
         # Run the algorithm in a separate thread to keep the GUI responsive
         def run_algorithm():
-            visited_order, total_cost, path = ucs.search(start_city, end_city)
+            visited_order, total_cost, path, nodes_expanded, max_frontier_size, visit_count = ucs.search(start_city, end_city)
             
             # Measure time after executing the algorithm
             end_time = time.time()
+            current, peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
             
-            path_str = " -> ".join(path)
-            result_text = f"Path: {path_str}\nTotal Cost: {total_cost}\nTime: {end_time - start_time} seconds\n"
-            result_label.config(text=result_text)
+            path_str = " -> ".join(visited_order)
+            
+            result_text = (
+                f"Path: {path_str}\n"
+                f"Total Cost: {total_cost}\n"
+                f"Time: {end_time - start_time} seconds\n"
+                f"Nodes Expanded: {nodes_expanded}\n"
+                f"Max Frontier Size: {max_frontier_size}\n"
+                f"Memory Usage: Current={current / 1024}KB, Peak={peak / 1024}KB\n"
+                f"Visit Count: {visit_count}"
+            )
+
+            # Clear previous result and insert new result
+            result_text_widget.delete(1.0, tk.END)
+            result_text_widget.insert(tk.END, result_text)
 
             # Highlight the final best path
             for line, city1, city2 in lines:
@@ -179,7 +208,7 @@ def reset():
     for city, rect in node_objects.items():
         canvas.itemconfig(rect, fill="white")
         dropdown_vars[city].set(" ")
-    result_label.config(text="")
+    result_text_widget.delete(1.0, tk.END)
 
 # Frame for buttons
 frame = tk.Frame(root)
@@ -193,9 +222,10 @@ find_button.pack(side=tk.LEFT, padx=10)
 reset_button = tk.Button(frame, text="Reset", command=reset)
 reset_button.pack(side=tk.LEFT, padx=10)
 
-# Label to display the result
-result_label = tk.Label(root, text="", bg="white")
-result_label.pack(pady=10)
+# Create a scrollable text widget for displaying the result
+result_text_widget = ScrolledText(root, width=80, height=10, wrap=tk.WORD, bg="white")
+result_text_widget.pack(pady=10)
+
 
 # Start the Tkinter event loop
 root.mainloop()

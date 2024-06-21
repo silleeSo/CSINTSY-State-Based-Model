@@ -169,7 +169,7 @@ def find_path():
                 path_str = " -> ".join(path)
                 traversed_path_str = " -> ".join(traversed_path)
                 result_text = (
-                    f"Final Path: {path_str}\n"
+                    f"Final Path: {path_str}\n\n"
                     f"Path Traversed: {traversed_path_str}\n\n"
                     f"Total Cost: {total_cost}\n\n"
                     f"Time: {end_time - start_time:.2f} seconds\n\n"

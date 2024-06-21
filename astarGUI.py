@@ -151,9 +151,9 @@ def find_path():
     
     if start_city is not None and end_city is not None:
         start_time = time.time()
-        
+        tracemalloc.start()
         def run_algorithm():
-            tracemalloc.start()
+            
 
             path, traversed_path, total_cost, nodes_expanded, max_frontier_size, visit_count = aStarSearch(
                 graph, start_city, end_city, heuristics, visualize_step
@@ -170,14 +170,13 @@ def find_path():
                 traversed_path_str = " -> ".join(traversed_path)
                 result_text = (
                     f"Path: {path_str}\n"
-                    f"Traversed Path: {traversed_path_str}\n"
-                    f"Total Cost: {total_cost}\n"
-                    f"Time: {end_time - start_time:.2f} seconds\n"
-                    f"Nodes Expanded: {nodes_expanded}\n"
-                    f"Max Frontier Size: {max_frontier_size}\n"    
+                    f"Path Traversed: {traversed_path_str}\n\n"
+                    f"Total Cost: {total_cost}\n\n"
+                    f"Time: {end_time - start_time:.2f} seconds\n\n"
+                    f"Nodes Expanded: {nodes_expanded}\n\n"
+                    f"Max Frontier Size: {max_frontier_size}\n\n"    
+                    f"Memory Usage: Current={current / 1024}KB, Peak={peak / 1024}KB\n\n"
                     f"Visit Count: {visit_count}\n"
-                    f"Current Memory Usage: {current / 10**6:.2f} MB\n"
-                    f"Peak Memory Usage: {peak / 10**6:.2f} MB\n"
                 )
             result_label.config(text=result_text)
 
